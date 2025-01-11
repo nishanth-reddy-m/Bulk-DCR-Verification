@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+    <title>Serial Number Validation</title>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>DCR Validation</h1>
+        </header>
+        <section class="form-section">
+            <form method="POST">
+                <div class="form-group">
+                    <label for="">Valid Inputs</label>
+                    <textarea name="ex1" id="ex1" style="max-height: 50px;" placeholder="WS05249034697231,WS05249034697220,RSL144CM2403300063,RSL144CM2403300028" disabled></textarea>
+                    <textarea name="ex2" id="ex2" style="max-height: 100px;" placeholder="WS05249034697231&#10;WS05249034697220&#10;RSL144CM2403300063&#10;RSL144CM2403300028" disabled></textarea>
+                    <textarea name="ex3" id="ex3" style="max-height: 70px;" placeholder="&quot;WS05249034697231, WS05249034697220&quot;&#10;&apos;RSL144CM2403300063,RSL144CM2403300028&apos;" disabled></textarea>
+                    <p style="color: orange;margin: 10px;">Note: Input can contain <span style="color: red;">single quotes, double quotes, spaces</span> which will be ignored</p>
+                    <br><hr><br><br>
+                    <label for="sno">Input</label>
+                    <textarea name="sno" id="sno" placeholder="Enter serial numbers..."></textarea>
+                </div>
+                <button name="verify" type="submit" class="btn-verify">Verify</button>
+            </form>
+        </section>
+
+        {% if validatedData %}
+        <section class="result-section">
+            <table class="result-table">
+                <thead>
+                    <tr>
+                        <th>Serial Number</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sno in validatedData %}
+                    <tr>
+                        <td>{{sno}}</td>
+                        {% if validatedData[sno] %}
+                        <td class="valid">Panel {{sno}} is DCR (Domestic Content Requirement)</td>
+                        {% else %}
+                        <td class="invalid">Panel Number {{sno}} Not Found!</td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+        {% endif %}
+    </div>
+</body>
+</html>
