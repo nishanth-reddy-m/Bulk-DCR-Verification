@@ -3,53 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
     <title>Serial Number Validation</title>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>DCR Validation</h1>
+            <div id="Logo" class="tabcontent" style="text-align: center;">
+                <img id="rec-logo" src="{{ url_for('static', filename='images/rec-logo.png') }}" style="width: 15%;" alt="REC Logo">
+            </div>
+            <h1>Bulk DCR Verification</h1>
         </header>
         <section class="form-section">
             <form method="POST">
                 <div class="form-group">
-                    <label for="">Valid Inputs</label>
-                    <textarea name="ex1" id="ex1" style="max-height: 50px;" placeholder="WS05249034697231,WS05249034697220,RSL144CM2403300063,RSL144CM2403300028" disabled></textarea>
-                    <textarea name="ex2" id="ex2" style="max-height: 100px;" placeholder="WS05249034697231&#10;WS05249034697220&#10;RSL144CM2403300063&#10;RSL144CM2403300028" disabled></textarea>
-                    <textarea name="ex3" id="ex3" style="max-height: 70px;" placeholder="&quot;WS05249034697231, WS05249034697220&quot;&#10;&apos;RSL144CM2403300063,RSL144CM2403300028&apos;" disabled></textarea>
-                    <p style="color: orange;margin: 10px;">Note: Input can contain <span style="color: red;">single quotes, double quotes, spaces</span> which will be ignored</p>
-                    <br><hr><br><br>
                     <label for="sno">Input</label>
                     <textarea name="sno" id="sno" placeholder="Enter serial numbers..."></textarea>
                 </div>
+                <p style="color: orange;margin: 10px;">Note: <br>
+                    Panel/DCR codes are to be seperated with <span style="color: red;">coma or new line.</span> <br>
+                    Input can contain single quotes, double quotes, spaces which will be ignored. <br>
+                    Repeated Panel/DCR codes will not be processed.
+                </p>
                 <button name="verify" type="submit" class="btn-verify">Verify</button>
             </form>
         </section>
 
         {% if validatedData %}
+        <br><hr><br>
         <section class="result-section">
             <table class="result-table">
                 <thead>
                     <tr>
-                        <th>Serial Number</th>
+                        <th>S.No</th>
+                        <th>Panel/DCR Number</th>
                         <th>Result</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for sno in validatedData %}
+                    {% for (sno,valid) in validatedData.items() %}
                     <tr>
+                        <td>{{loop.index}}</td>
                         <td>{{sno}}</td>
-                        {% if validatedData[sno] %}
-                        <td class="valid">Panel {{sno}} is DCR (Domestic Content Requirement)</td>
+                        {% if valid %}
+                        <td class="valid"><span style="color: transparent;">1</span><i class="fa-solid fa-circle-check fa-lg" title="Panel {{sno}} is DCR (Domestic Content Requirement)" style="color: green;"></i></td>
                         {% else %}
-                        <td class="invalid">Panel Number {{sno}} Not Found!</td>
+                        <td class="invalid"><span style="color: transparent;">0</span><i class="fa-solid fa-circle-xmark fa-lg" title="Panel Number {{sno}} Not Found!" style="color: red;"></i></td>
                         {% endif %}
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
-        </section>
+        </section><br>
+        <textarea style="max-height: 50px;" disabled>Processed {{process['no_of_inputs']}} inputs in {{process['execution_time']}} secs</textarea>
         {% endif %}
     </div>
 </body>
